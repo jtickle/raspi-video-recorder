@@ -8,7 +8,8 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Set this to where you want logs written
 # Defaults to <location of script>/logs
-LOGS=$MYDIR/logs
+OUTLOG=$MYDIR/logs/stdout.log
+ERRLOG=$MYDIR/logs/stderr.log
 
 # Set this to where you want videos written
 # Defaults to <location of script>/vids
@@ -21,10 +22,13 @@ WIDTH=640
 HEIGHT=480
 
 # Make sure log and video directories exist
-mkdir -p $LOGS $VIDS
+mkdir -p $(dirname $OUTLOG) $(dirname $ERRLOG) $VIDS
 
 # Redirect all output to logs
-exec >$LOGS/$NOW-out.log 2>$LOGS/$NOW-err.log
+exec >>$OUTLOG 2>>$ERRLOG
+
+echo "Begin run $NOW"
+echo "Begin run $NOW" >&2
 
 # Record Video
 raspivid -t 0 -fps $FPS -b $BPS \

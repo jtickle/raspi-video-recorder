@@ -2,26 +2,38 @@
 
 # Verify some settings with the user...
 
-SYSTEMD_EXEC_PATH=$(grep ExecStart= camera-record.service | cut -d = -f 2)
+SERVICE=camera-record.service
+SYSTEMD_EXEC_PATH=$(grep ExecStart= $SERVICE | cut -d = -f 2)
 MY_PATH=$(pwd)
-USER=$(grep User= camera-record.service | cut -d = -f 2)
-GROUP=$(grep Group= camera-record.service | cut -d = -f 2)
+USER=$(grep User= $SERVICE | cut -d = -f 2)
+GROUP=$(grep Group= $SERVICE | cut -d = -f 2)
+
+INSTALL_SERVICE="sudo cp $SERVICE /etc/systemd/system"
+ENABLE_SERVICE="sudo systemctl enable $SERVICE"
+DAEMON_RELOAD="sudo systemctl daemon-reload"
 
 echo
 echo "This script should be run from the root of the raspi-video-recorder"
 echo "repository.  It looks like it is being run from:"
-echo "  $MY_PATH"
+echo "  $MY_PATH/record"
 echo
 echo "Systemd will think that it is installed to:"
 echo "  $SYSTEMD_EXEC_PATH"
 echo
 echo "The above two paths should match.  Otherwise, edit"
-echo "camera-record.service and change the ExecStart line."
+echo "$SERVICE and change the ExecStart line."
 echo
 echo "This script will run as user $USER and group $GROUP."
 echo
-echo "If this does not please, then edit camera-record.service and change"
+echo "If this does not please, then edit $SERVICE and change"
 echo "the User and Group lines."
+echo
+echo "If you say 'yes' below, this script will execute:"
+echo "  $INSTALL_SERVICE"
+echo "  $ENABLE_SERVICE"
+echo "  $DAEMON_RELOAD"
+echo "You may be prompted for a password by sudo.  The default"
+echo "password is 'raspberry'."
 echo
 
 while read -p "Install? (yes/no) " DOINSTALL; do
@@ -37,14 +49,12 @@ done
 
 echo
 
-echo "sudo cp camera-record.service /etc/systemd/system/"
-sudo cp camera.record.service /etc/systemd/system/
-
-echo "sudo systemctl enable camera-record.service"
-sudo systemctl enable camera-record.service
+$INSTALL_SERVICE
+$ENABLE_SERVICE
+$DAEMON_RELOAD
 
 echo
-echo "You may now wish to run 'sudo systemctl start camera-record.service',"
+echo "You may now wish to run 'sudo systemctl start $SERVICE',"
 echo "which will start recording to $MY_PATH/vids.  It is configured to"
 echo "automatically start on next boot."
 echo

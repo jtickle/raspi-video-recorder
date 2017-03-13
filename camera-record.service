@@ -1,5 +1,6 @@
 [Service]
 Type=simple
+Restart=always
 
 #################################################
 # Set this to the location of your installation #
