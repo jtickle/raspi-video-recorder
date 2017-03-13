@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Get a timestamp for video file names and logs
+NOW=$(date +%Y%m%d%H%M%S)
+
+# Find the absolute path of this script
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Set this to where you want logs written
+# Defaults to <location of script>/logs
+LOGS=$MYDIR/logs
+
+# Set this to where you want videos written
+# Defaults to <location of script>/vids
+VIDS=$MYDIR/vids
+
+# Video Options - the defaults are pretty good
+FPS=25
+BPS=1200000
+WIDTH=640
+HEIGHT=480
+
+# Make sure log and video directories exist
+mkdir -p $LOGS $VIDS
+
+# Redirect all output to logs
+exec >/home/pi/camera/logs/$NOW-out.log 2>/home/pi/camera/logs/$NOW-err.log
+
+# Record Video
+raspivid -t 0 -fps $FPS -b $BPS \
+         -w $WIDTH -h $HEIGHT -p 0,0,$WIDTH,$HEIGHT \
+         -l -o /home/pi/camera/vids/$NOW.h264

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Verify some settings with the user...
+
+SYSTEMD_EXEC_PATH=$(grep ExecStart= camera-record.service | cut -d = -f 2)
+MY_PATH=$(pwd)
+USER=$(grep User= camera-record.service | cut -d = -f 2)
+GROUP=$(grep Group= camera-record.service | cut -d = -f 2)
+
+echo
+echo "This script should be run from the root of the raspi-video-recorder"
+echo "repository.  It looks like it is being run from:"
+echo "  $MY_PATH"
+echo
+echo "Systemd will think that it is installed to:"
+echo "  $SYSTEMD_EXEC_PATH"
+echo
+echo "The above two paths should match.  Otherwise, edit"
+echo "camera-record.service and change the ExecStart line."
+echo
+echo "This script will run as user $USER and group $GROUP."
+echo
+echo "If this does not please, then edit camera-record.service and change"
+echo "the User and Group lines."
+echo
+
+while read -p "Install? (yes/no) " DOINSTALL; do
+  if [ x$DOINSTALL == "xno" ]; then
+    echo "Not Installing."
+    exit
+  elif [ x$DOINSTALL == "xyes" ]; then
+    break
+  else
+    echo "Please enter 'yes' or 'no'."
+  fi
+done
+
+echo
+
+echo "sudo cp camera-record.service /etc/systemd/system/"
+sudo cp camera.record.service /etc/systemd/system/
+
+echo "sudo systemctl enable camera-record.service"
+sudo systemctl enable camera-record.service
+
+echo
+echo "You may now wish to run 'sudo systemctl start camera-record.service',"
+echo "which will start recording to $MY_PATH/vids.  It is configured to"
+echo "automatically start on next boot."
+echo

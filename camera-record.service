@@ -1,0 +1,20 @@
+[Service]
+Type=simple
+
+#################################################
+# Set this to the location of your installation #
+ExecStart=/home/pi/raspi-video-recorder/record
+#################################################
+
+###########################################################
+# If you want to run with a different user and group than #
+# 'pi', change that here                                  #
+User=pi
+Group=pi
+###########################################################
+
+[Unit]
+Description=Stream Raspberry Pi Camera Video
+
+[Install]
+WantedBy=multi-user.target
