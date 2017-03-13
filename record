@@ -24,9 +24,9 @@ HEIGHT=480
 mkdir -p $LOGS $VIDS
 
 # Redirect all output to logs
-exec >/home/pi/camera/logs/$NOW-out.log 2>/home/pi/camera/logs/$NOW-err.log
+exec >$LOGS/$NOW-out.log 2>$LOGS/$NOW-err.log
 
 # Record Video
 raspivid -t 0 -fps $FPS -b $BPS \
          -w $WIDTH -h $HEIGHT -p 0,0,$WIDTH,$HEIGHT \
-         -l -o /home/pi/camera/vids/$NOW.h264
+         -l -o $VIDS/$NOW.h264
